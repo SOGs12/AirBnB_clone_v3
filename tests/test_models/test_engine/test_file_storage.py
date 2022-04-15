@@ -115,57 +115,16 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(json.loads(string), json.loads(js))
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_get_no_class(self):
-        """ test get with a non existing class
-        """
-        storage = FileStorage()
-        one = storage.get("NO", "09231280jdodasd")
-        self.assertEqual(one, None)
-
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_get_class_no_id(self):
-        """ test get if a class id doesn´t exist
-        """
-        storage = FileStorage()
-        one = storage.get("State", "09231280jdodasd")
-        self.assertEqual(one, None)
-
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_get(self):
-        """ test get return
-        """
+        """Test that get properly returns a requested object"""
         storage = FileStorage()
-        first_elem = list(storage.all("State").values())[0]
-        first_state_id = first_elem.id
-        one = storage.get("State", first_state_id)
-        self.assertEqual(one, first_elem)
-
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_count_no_class(self):
-        """ test count is no class
-        """
-        storage = FileStorage()
-        counter = 0
-        dic = storage.all()
-        for elem in dic:
-            counter = counter + 1
-        self.assertEqual(counter, storage.count())
-
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
-    def test_count_fail(self):
-        """ test count if no valid class
-        """
-        storage = FileStorage()
-        counter = 0
-        self.assertEqual(counter, storage.count("NO_CLASS"))
+        user = User(name="User1")
+        user.save()
+        self.assertEqual(user, storage.get("User", user.id))
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_count(self):
-        """ test count with class user
-        """
+        """Test that count properly counts all objects"""
         storage = FileStorage()
-        counter = 0
-        dic = storage.all("User")
-        for elem in dic:
-            counter = counter + 1
-        self.assertEqual(counter, storage.count("User"))
+        nobjs = len(storage._FileStorage__objects)
+        self.assertEqual(nobjs, storage.count())
