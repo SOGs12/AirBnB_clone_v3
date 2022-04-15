@@ -44,7 +44,7 @@ class FileStorage:
         """serializes __objects to the JSON file (path: __file_path)"""
         json_objects = {}
         for key in self.__objects:
-            json_objects[key] = self.__objects[key].to_dict(dump="Yes")
+            json_objects[key] = self.__objects[key].to_dict()
         with open(self.__file_path, 'w') as f:
             json.dump(json_objects, f)
 
@@ -70,24 +70,28 @@ class FileStorage:
         self.reload()
 
     def get(self, cls, id):
+        """ return the specified object if exsist
         """
-        Returns the object based on the class name and its ID, or None if not
-        found
-        """
-        key = "{}.{}".format(cls, id)
-        if key in self.__objects.keys():
-            return self.__objects[key]
-        return None
+        dic = self.__objects
+        for key in dic:
+            value = dic[key]
+            if (cls == value.__class__ or cls == value.__class__.__name__):
+                if (value.id == id):
+                    return (value)
+        return(None)
 
     def count(self, cls=None):
+        """ return number of objects of specified class
         """
-        Returns the number of objects in storage matching the given class name.
-        If no name is passed, returns the count of all objects in storage.
-        """
-        if cls:
-            counter = 0
-            for obj in self.__objects.values():
-                if obj.__class__.__name__ == cls:
-                    counter += 1
-            return counter
-        return len(self.__objects)
+        count = 0
+        dic = self.__objects
+        if not cls:
+            for elem in dic:
+                count = count + 1
+            return (count)
+        else:
+            for key in dic:
+                value = dic[key]
+                if (cls == value.__class__ or cls == value.__class__.__name__):
+                    count = count + 1
+            return (count)
