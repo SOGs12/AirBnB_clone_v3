@@ -88,51 +88,13 @@ class TestFileStorage(unittest.TestCase):
         """Test that save properly saves objects to file.json"""
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_get_no_class(self):
-        """ test get with a non existing class
-        """
-        one = models.storage.get("NO", "09231280jdodasd")
-        self.assertEqual(one, None)
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_get_class_no_id(self):
-        """ test get if a class id doesn´t exist
-        """
-        one = models.storage.get("State", "09231280jdodasd")
-        self.assertEqual(one, None)
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_get(self):
-        """ test get return
-        """
-        state = State(name='prueba')
-        models.storage.new(state)
-        models.storage.save()
-        self.assertEqual(models.storage.get("State", state.id).id, state.id)
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_count_no_class(self):
-        """ test count is no class
-        """
-        counter = 0
-        dic = models.storage.all()
-        for elem in dic:
-            counter = counter + 1
-        self.assertEqual(counter, models.storage.count())
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_count_fail(self):
-        """ test count if no valid class
-        """
-        counter = 0
-        self.assertEqual(counter, models.storage.count("NO_CLASS"))
+        """Test that get properly returns a requested object"""
+        user = User(name="User1")
+        user.save()
+        self.assertEqual(models.storage.get("User", user.id), user)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_count(self):
-        """ test count with class user
-        """
-        counter = 0
-        dic = models.storage.all("User")
-        for elem in dic:
-            counter = counter + 1
-        self.assertEqual(counter, models.storage.count("User"))
+        """Test that count properly counts all objects"""
+        self.assertEqual(len(models.storage.all()), models.storage.count())
